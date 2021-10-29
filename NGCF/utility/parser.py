@@ -6,9 +6,35 @@ Wang Xiang et al. Neural Graph Collaborative Filtering. In SIGIR 2019.
 @author: Xiang Wang (xiangwang@u.nus.edu)
 '''
 import argparse
+class Parser():
+    def __init__(self):
+        self.weights_path = ''
+        self.data_path = ''
+        self.proj_path = ""
+        self.dataset = "amazon-book"
+        self.pretrain = 0
+        self.verbose = 1
+        self.epoch = 500
+        self.embed_size = 64
+        self.layer_size = '[64]'
+        self.batch_size = 1024
+        self.regs = '[1e-5,1e-5,1e-2]'
+        self.lr = 0.01
+        self.model_type = "ngcf"
+        self.adj_type = 'norm'
+        self.alg_type = "ngcf"
+        self.gpu_id = 0
+        self.node_dropout_flag = 0
+        self.node_dropout = '[0.1]'
+        self.Ks = '[20, 40, 60, 80, 100]'
+        self.save_flag = 1
+        self.test_flag = "part"
+        self.report = 0
+        
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Run NGCF.")
+    parser
     parser.add_argument('--weights_path', nargs='?', default='',
                         help='Store model path.')
     parser.add_argument('--data_path', nargs='?', default='../Data/',
@@ -65,4 +91,4 @@ def parse_args():
 
     parser.add_argument('--report', type=int, default=0,
                         help='0: Disable performance report w.r.t. sparsity levels, 1: Show performance report w.r.t. sparsity levels')
-    return parser.parse_args()
+    return parser

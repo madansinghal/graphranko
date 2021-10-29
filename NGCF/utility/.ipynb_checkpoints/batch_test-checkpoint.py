@@ -6,14 +6,14 @@ Wang Xiang et al. Neural Graph Collaborative Filtering. In SIGIR 2019.
 @author: Xiang Wang (xiangwang@u.nus.edu)
 '''
 import utility.metrics as metrics
-from utility.parser import parse_args, Parser
+from utility.parser import parse_args
 from utility.load_data import *
 import multiprocessing
 import heapq
 
 cores = multiprocessing.cpu_count() // 2
 
-args = Parser()
+args = parse_args()
 Ks = eval(args.Ks)
 args.data_path = "/home/ec2-user/SageMaker/graphranko/Data/"
 
