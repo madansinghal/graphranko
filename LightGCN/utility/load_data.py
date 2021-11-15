@@ -21,6 +21,7 @@ class Data(object):
         test_file = path + '/test.txt'
         user_file = path + '/user_list.txt'
         item_file = path + '/item_list.txt'
+        rating_file = path + '/user-item-rating.csv'
 
 
         self.n_users, self.n_items = 0, 0
@@ -30,7 +31,7 @@ class Data(object):
         self.item_map = {}
 
         self.exist_users = []
-        self.df_rating = pd.read_csv("/Users/msinghal/SourceCodes/Personal/LightGCN/Data/amazon-electronics-v1/user-item-rating.csv")
+        self.df_rating = pd.read_csv(rating_file)
         self.df_rating.set_index(['user', 'item'], inplace=True)
 
         with open(user_file) as f:
@@ -206,10 +207,18 @@ class Data(object):
 
         def sample_rating_for_u_and_i(u, i):
             try:
-                return list(self.df_rating.loc[(pd.IndexSlice[self.user_map[u], self.item_map[i]]), 'rating'])[0] - 3
+                if list(self.df_rating.loc[(pd.IndexSlice[self.user_map[u], self.item_map[i]]), 'rating'])[0] == 5:
+                    return 1
+                elif list(self.df_rating.loc[(pd.IndexSlice[self.user_map[u], self.item_map[i]]), 'rating'])[0] == 4:
+                    return 0.5
+                elif list(self.df_rating.loc[(pd.IndexSlice[self.user_map[u], self.item_map[i]]), 'rating'])[0] == 3:
+                    return 0
+                elif list(self.df_rating.loc[(pd.IndexSlice[self.user_map[u], self.item_map[i]]), 'rating'])[0] == 2:
+                    return 0.5
+                elif list(self.df_rating.loc[(pd.IndexSlice[self.user_map[u], self.item_map[i]]), 'rating'])[0] == 1:
+                    return 1
             except KeyError:
-                return -1
-
+                return 1
 
         def sample_neg_items_for_u_from_pools(u, num):
             neg_items = list(set(self.neg_pools[u]) - set(self.train_items[u]))
@@ -221,8 +230,8 @@ class Data(object):
             pos_items += pos_items_for_u
             neg_items_for_u = sample_neg_items_for_u(u, 1)
             neg_items += neg_items_for_u
-            pos_items_ratings.append(sample_rating_for_u_and_i(u, pos_items_for_u[0]))
-            neg_items_ratings.append(sample_rating_for_u_and_i(u, neg_items_for_u[0]))
+            pos_items_ratings.append(1)
+            neg_items_ratings.append(1)
 
         return users, pos_items, neg_items, pos_items_ratings, neg_items_ratings
     
@@ -256,9 +265,18 @@ class Data(object):
 
         def sample_rating_for_u_and_i(u, i):
             try:
-                return (list(self.df_rating.loc[(pd.IndexSlice[self.user_map[u], self.item_map[i]]), 'rating'])[0] - 3)/2
+                if list(self.df_rating.loc[(pd.IndexSlice[self.user_map[u], self.item_map[i]]), 'rating'])[0] == 5:
+                    return 1
+                elif list(self.df_rating.loc[(pd.IndexSlice[self.user_map[u], self.item_map[i]]), 'rating'])[0] == 4:
+                    return 0.5
+                elif list(self.df_rating.loc[(pd.IndexSlice[self.user_map[u], self.item_map[i]]), 'rating'])[0] == 3:
+                    return 0
+                elif list(self.df_rating.loc[(pd.IndexSlice[self.user_map[u], self.item_map[i]]), 'rating'])[0] == 2:
+                    return 0.5
+                elif list(self.df_rating.loc[(pd.IndexSlice[self.user_map[u], self.item_map[i]]), 'rating'])[0] == 1:
+                    return 1
             except KeyError:
-                return -1
+                return 1
     
         def sample_neg_items_for_u_from_pools(u, num):
             neg_items = list(set(self.neg_pools[u]) - set(self.train_items[u]))
@@ -270,8 +288,8 @@ class Data(object):
             pos_items += pos_items_for_u
             neg_items_for_u = sample_neg_items_for_u(u, 1)
             neg_items += neg_items_for_u
-            pos_items_ratings.append(sample_rating_for_u_and_i(u, pos_items_for_u[0]))
-            neg_items_ratings.append(sample_rating_for_u_and_i(u, neg_items_for_u[0]))
+            pos_items_ratings.append(1)
+            neg_items_ratings.append(1)
 
         return users, pos_items, neg_items, pos_items_ratings, neg_items_ratings
 
@@ -365,3 +383,4 @@ class Data(object):
 
 
         return split_uids, split_state
+

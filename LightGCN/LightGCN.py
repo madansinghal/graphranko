@@ -353,7 +353,7 @@ class LightGCN(object):
                 self.pos_i_g_embeddings_pre) + tf.nn.l2_loss(self.neg_i_g_embeddings_pre)
         regularizer = regularizer / self.batch_size
         
-        mf_loss = tf.reduce_mean(tf.nn.softplus(-(tf.multiply(pos_scores, pos_ratings) - (neg_scores, neg_ratings))))
+        mf_loss = tf.reduce_mean(tf.nn.softplus(-(tf.multiply(pos_scores, pos_ratings) - tf.multiply(neg_scores, neg_ratings))))
         
 
         emb_loss = self.decay * regularizer
