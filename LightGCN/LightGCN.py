@@ -216,7 +216,7 @@ class LightGCN(object):
 
         return all_weights
 
-    def _split_A_hat(self, X, use_categories=True):
+    def _split_A_hat(self, X, use_categories=False):
         A_fold_hat = []
 
         fold_len = (self.n_users + self.n_items + self.n_categories) // self.n_fold if use_categories else (self.n_users + self.n_items) // self.n_fold
@@ -230,7 +230,7 @@ class LightGCN(object):
             A_fold_hat.append(self._convert_sp_mat_to_sp_tensor(X[start:end]))
         return A_fold_hat
 
-    def _split_A_hat_node_dropout(self, X, use_categories=True):
+    def _split_A_hat_node_dropout(self, X, use_categories=False):
         A_fold_hat = []
 
         if use_categories:
@@ -279,7 +279,7 @@ class LightGCN(object):
         else:
             A_fold_hat = self._split_A_hat(self.norm_adj)
 
-        ego_embeddings = tf.concat([self.weights['user_embedding'], self.weights['item_embedding'], self.weights['category_embedding']], axis=0)
+        ego_embeddings = tf.concat([self.weights['user_embedding'], self.weights['item_embedding']], axis=0)
         all_embeddings = [ego_embeddings]
 
         for k in range(0, self.n_layers):
@@ -293,7 +293,7 @@ class LightGCN(object):
             all_embeddings += [ego_embeddings]
         all_embeddings = tf.stack(all_embeddings, 1)
         all_embeddings = tf.reduce_mean(all_embeddings, axis=1, keepdims=False)
-        u_g_embeddings, i_g_embeddings, c_g_embeddings = tf.split(all_embeddings, [self.n_users, self.n_items, self.n_categories], 0)
+        u_g_embeddings, i_g_embeddings = tf.split(all_embeddings, [self.n_users, self.n_items], 0)
         return u_g_embeddings, i_g_embeddings
 
     def _create_ngcf_embed(self):
@@ -302,7 +302,7 @@ class LightGCN(object):
         else:
             A_fold_hat = self._split_A_hat(self.norm_adj)
 
-        ego_embeddings = tf.concat([self.weights['user_embedding'], self.weights['item_embedding'], self.weights['category_embedding']], axis=0)
+        ego_embeddings = tf.concat([self.weights['user_embedding'], self.weights['item_embedding']], axis=0)
 
         all_embeddings = [ego_embeddings]
 
@@ -510,7 +510,7 @@ if __name__ == '__main__':
     *********************************************************
     Generate the Laplacian matrix, where each entry defines the decay factor (e.g., p_ui) between two connected nodes.
     """
-    plain_adj, norm_adj, mean_adj, pre_adj = data_generator.get_adj_mat(category=True)
+    plain_adj, norm_adj, mean_adj, pre_adj = data_generator.get_adj_mat(use_categories = args.alg_type=='graphranko')
     if args.adj_type == 'plain':
         config['norm_adj'] = plain_adj
         print('use the plain adjacency matrix')

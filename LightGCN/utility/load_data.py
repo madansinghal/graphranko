@@ -118,7 +118,7 @@ class Data(object):
                     uid, test_items = items[0], items[1:]
                     self.test_set[uid] = test_items
 
-    def get_adj_mat(self, category=True):
+    def get_adj_mat(self, use_categories=True):
         try:
             t1 = time()
             adj_mat = sp.load_npz(self.path + '/s_adj_mat.npz')
@@ -127,7 +127,7 @@ class Data(object):
             print('already load adj matrix', adj_mat.shape, time() - t1)
 
         except Exception:
-            adj_mat, norm_adj_mat, mean_adj_mat = self.create_adj_mat(category)
+            adj_mat, norm_adj_mat, mean_adj_mat = self.create_adj_mat(use_categories)
             sp.save_npz(self.path + '/s_adj_mat.npz', adj_mat)
             sp.save_npz(self.path + '/s_norm_adj_mat.npz', norm_adj_mat)
             sp.save_npz(self.path + '/s_mean_adj_mat.npz', mean_adj_mat)
@@ -149,9 +149,9 @@ class Data(object):
 
         return adj_mat, norm_adj_mat, mean_adj_mat, pre_adj_mat
 
-    def create_adj_mat(self, category=True):
+    def create_adj_mat(self, use_categories=True):
         t1 = time()
-        if category:
+        if use_categories:
             adj_mat = sp.dok_matrix((self.n_users + self.n_items + self.n_categories, self.n_users + self.n_items +  self.n_categories), dtype=np.float32)
         else:
             adj_mat = sp.dok_matrix((self.n_users + self.n_items, self.n_users + self.n_items), dtype=np.float32)
@@ -165,7 +165,7 @@ class Data(object):
                 R[int(self.n_users * i / 5.0):int(self.n_users * (i + 1.0) / 5)].T
 
         M = self.M.tolil()
-        if category:
+        if use_categories:
             adj_mat[self.n_users:self.n_users+self.n_items, self.n_users+self.n_items:self.n_users+self.n_items+self.n_categories] = M
             adj_mat[self.n_users+self.n_items:self.n_users+self.n_items+self.n_categories, self.n_users:self.n_users+self.n_items] = M.T
         adj_mat = adj_mat.todok()
