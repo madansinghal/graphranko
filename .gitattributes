@@ -1,1 +1,2 @@
 LightGCN/Data/amazon-electronics-v3/user-item-rating.csv filter=lfs diff=lfs merge=lfs -text
+LightGCN/Data/amazon-electronics-v3/item_meta_list.txt filter=lfs diff=lfs merge=lfs -text

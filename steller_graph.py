@@ -202,10 +202,10 @@ class Amz_Dataset():
             data and features, and the second element is a pandas DataFrame of edges, with columns
             ``user_id``, ``movie_id`` and ``rating`` (a label from 1 to 5).
         """
-        rating_file = "/Users/msinghal/SourceCodes/Personal/LightGCN/Data/amazon-electronics-v2/user-item-rating.csv"
-        user_file = "/Users/msinghal/SourceCodes/Personal/LightGCN/Data/amazon-electronics-v2/user_list.txt"
-        item_file = "/Users/msinghal/SourceCodes/Personal/LightGCN/Data/amazon-electronics-v2/item_meta_list.txt"
-        category_file = "/Users/msinghal/SourceCodes/Personal/LightGCN/Data/amazon-electronics-v2/categories.txt"
+        rating_file = "/Users/msinghal/SourceCodes/Personal/graphranko/LightGCN/Data/amazon-electronics-v2/user-item-rating.csv"
+        user_file = "/Users/msinghal/SourceCodes/Personal/graphranko/LightGCN/Data/amazon-electronics-v2/user_list.txt"
+        item_file = "/Users/msinghal/SourceCodes/Personal/graphranko/LightGCN/Data/amazon-electronics-v2/item_meta_list.txt"
+        category_file = "/Users/msinghal/SourceCodes/Personal/graphranko/LightGCN/Data/amazon-electronics-v2/categories.txt"
 
         edges = pd.read_csv(rating_file)
 
@@ -237,7 +237,10 @@ class Amz_Dataset():
         def m(movies):
             return "i_" + movies.astype(str)
 
-        edges = edges.merge(users, on="user").merge(items, on="item")[["user_id", "item_id", "rating"]]
+        print(edges.columns)
+        print(users.columns)
+
+        edges = edges.merge(users, on="user").merge(items, on="item")
 
         users["user_id"] = u(users["user_id"])
         users.set_index("user_id", inplace=True)
@@ -254,13 +257,13 @@ class Amz_Dataset():
         # feature_encoding = preprocessing.OneHotEncoder(sparse=False)
         # onehot = feature_encoding.fit_transform(users[["user"]])
         # scaled_age = preprocessing.scale(users["age"])
-        values = np.zeros((len(users.index), len(users.index)))
+        values = np.zeros((len(users.index), len(users.index)), dtype=np.uint8)
         np.fill_diagonal(values, 1)
         encoded_users = pd.DataFrame(values, index=users.index, columns=users.index)
         if not metadata:
-            values = np.zeros((len(items.index), len(items.index)))
+            values = np.zeros((len(items.index), len(items.index)), dtype=np.int8)
             np.fill_diagonal(values, 1)
-            encoded_items = pd.DataFrame(values, index=items.index, columns=items.index)
+            encoded_items = pd.DataFrame(values, index=items.index, columns=items.index, dtype=np.uint8)
             return self.generate_nx_graph_with_features(edges, encoded_users, encoded_items), edges
         return self.generate_nx_graph_with_features(edges, encoded_users, items), edges
 
