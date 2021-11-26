@@ -118,8 +118,9 @@ class Data(object):
                     uid, test_items = items[0], items[1:]
                     self.test_set[uid] = test_items
 
-    def get_adj_mat(self, use_categories=True):
+    def get_adj_mat(self, use_categories=True, load_npz_files=False):
         try:
+            if not load_npz_files: raise Exception
             t1 = time()
             adj_mat = sp.load_npz(self.path + '/s_adj_mat.npz')
             norm_adj_mat = sp.load_npz(self.path + '/s_norm_adj_mat.npz')
@@ -133,6 +134,7 @@ class Data(object):
             sp.save_npz(self.path + '/s_mean_adj_mat.npz', mean_adj_mat)
 
         try:
+            if not load_npz_files: raise Exception
             pre_adj_mat = sp.load_npz(self.path + '/s_pre_adj_mat.npz')
         except Exception:
             adj_mat = adj_mat
