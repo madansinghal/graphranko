@@ -39,11 +39,11 @@ def parse_args():
     parser.add_argument('--lr', type=float, default=0.01,
                         help='Learning rate.')
 
-    parser.add_argument('--model_type', nargs='?', default='lightgcn',
+    parser.add_argument('--model_type', nargs='?', default='graphranko',
                         help='Specify the name of model (lightgcn).')
     parser.add_argument('--adj_type', nargs='?', default='pre',
                         help='Specify the type of the adjacency (laplacian) matrix from {plain, norm, mean}.')
-    parser.add_argument('--alg_type', nargs='?', default='ngcf',
+    parser.add_argument('--alg_type', nargs='?', default='graphranko',
                         help='Specify the type of the graph convolutional layer from {ngcf, gcn, gcmc}.')
 
     parser.add_argument('--gpu_id', type=int, default=0,
@@ -67,5 +67,8 @@ def parse_args():
 
     parser.add_argument('--report', type=int, default=0,
                         help='0: Disable performance report w.r.t. sparsity levels, 1: Show performance report w.r.t. sparsity levels')
+
+    parser.add_argument('--rated_bpr_loss', type=bool, default=False, help="consider rating data in bpr loss")
+
 
     return parser.parse_args()

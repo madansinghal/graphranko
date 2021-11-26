@@ -262,6 +262,7 @@ class Data(object):
             pos_items_ratings.append(1)
             neg_items_ratings.append(1)
 
+
         return users, pos_items, neg_items, pos_items_ratings, neg_items_ratings
 
     def sample_test(self):
