@@ -11,9 +11,10 @@ import pandas as pd
 
 
 class Data(object):
-    def __init__(self, path, batch_size):
+    def __init__(self, path, batch_size, rated_bpr_loss):
         self.path = path
         self.batch_size = batch_size
+        self.rated_bpr_loss = rated_bpr_loss
 
         train_file = path + '/train.txt'
         test_file = path + '/test.txt'
@@ -261,8 +262,8 @@ class Data(object):
             pos_items += pos_items_for_u
             neg_items_for_u = sample_neg_items_for_u(u, 1)
             neg_items += neg_items_for_u
-            pos_items_ratings.append(sample_rating_for_u_and_i(u, pos_items_for_u))
-            neg_items_ratings.append(sample_rating_for_u_and_i(u, neg_items_for_u))
+            pos_items_ratings.append(sample_rating_for_u_and_i(u, pos_items_for_u[0]) if self.rated_bpr_loss else 1)
+            neg_items_ratings.append(sample_rating_for_u_and_i(u, neg_items_for_u[0]) if self.rated_bpr_loss else 1)
 
 
         return users, pos_items, neg_items, pos_items_ratings, neg_items_ratings
@@ -320,8 +321,8 @@ class Data(object):
             pos_items += pos_items_for_u
             neg_items_for_u = sample_neg_items_for_u(u, 1)
             neg_items += neg_items_for_u
-            pos_items_ratings.append(sample_rating_for_u_and_i(u, pos_items_for_u[0]))
-            neg_items_ratings.append(sample_rating_for_u_and_i(u, neg_items_for_u[0]))
+            pos_items_ratings.append(sample_rating_for_u_and_i(u, pos_items_for_u[0]) if self.rated_bpr_loss else 1)
+            neg_items_ratings.append(sample_rating_for_u_and_i(u, neg_items_for_u[0]) if self.rated_bpr_loss else 1)
 
         return users, pos_items, neg_items, pos_items_ratings, neg_items_ratings
 
