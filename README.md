@@ -1,30 +1,20 @@
-# Neural Graph Collaborative Filtering
+# GraphicoRango: improved version of NGCF and Light GCN
 This is our Tensorflow implementation for the paper:
 
->Xiang Wang, Xiangnan He, Meng Wang, Fuli Feng, and Tat-Seng Chua (2019). Neural Graph Collaborative Filtering, [Paper in ACM DL](https://dl.acm.org/citation.cfm?doid=3331184.3331267) or [Paper in arXiv](https://arxiv.org/abs/1905.08108). In SIGIR'19, Paris, France, July 21-25, 2019.
+NGCF >Xiang Wang, Xiangnan He, Meng Wang, Fuli Feng, and Tat-Seng Chua (2019). Neural Graph Collaborative Filtering, [Paper in ACM DL](https://dl.acm.org/citation.cfm?doid=3331184.3331267) or [Paper in arXiv](https://arxiv.org/abs/1905.08108). In SIGIR'19, Paris, France, July 21-25, 2019.
 
-Author: Dr. Xiang Wang (xiangwang at u.nus.edu)
+Author of NGCF: Dr. Xiang Wang (xiangwang at u.nus.edu)
+
+Author of GraphicoRango: Madan Singhal
 
 ## Introduction
-Neural Graph Collaborative Filtering (NGCF) is a new recommendation framework based on graph neural network, explicitly encoding the collaborative signal in the form of high-order connectivities in user-item bipartite graph by performing embedding propagation.
+
+NGCF: Neural Graph Collaborative Filtering (NGCF) is a new recommendation framework based on graph neural network, explicitly encoding the collaborative signal in the form of high-order connectivities in user-item bipartite graph by performing embedding propagation.
+
+LightGCN: It is an improved version of NGCF which is less computationally expensive (Light weight version) and have same feature as NGCF.
 
 ## Citation 
-If you want to use our codes and datasets in your research, please cite:
-```
-@inproceedings{NGCF19,
-  author    = {Xiang Wang and
-               Xiangnan He and
-               Meng Wang and
-               Fuli Feng and
-               Tat{-}Seng Chua},
-  title     = {Neural Graph Collaborative Filtering},
-  booktitle = {Proceedings of the 42nd International {ACM} {SIGIR} Conference on
-               Research and Development in Information Retrieval, {SIGIR} 2019, Paris,
-               France, July 21-25, 2019.},
-  pages     = {165--174},
-  year      = {2019},
-}
-```
+
 ## Environment Requirement
 The code has been tested running under Python 3.6.5. The required packages are as follows:
 * tensorflow == 1.8.0
@@ -88,3 +78,4 @@ We provide two processed datasets: Gowalla and Amazon-book.
 ## Acknowledgement
 
 This research is supported by the National Research Foundation, Singapore under its International Research Centres in Singapore Funding Initiative. Any opinions, findings and conclusions or recommendations expressed in this material are those of the author(s) and do not reflect the views of National Research Foundation, Singapore.
+
