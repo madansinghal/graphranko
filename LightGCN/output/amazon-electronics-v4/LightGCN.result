@@ -1,0 +1,10 @@
+embed_size=64, lr=0.0010, layer_size=[64,64,64], node_dropout=[0.1], mess_dropout=[0.1], regs=[1e-4], adj_type=pre
+	Best Iter=[0]@[385.2]	recall=[0.00691], precision=[0.00340], ndcg=[0.00612]
+embed_size=64, lr=0.0010, layer_size=[64,64,64], node_dropout=[0.1], mess_dropout=[0.1], regs=[1e-4], adj_type=pre
+	Best Iter=[0]@[436.8]	recall=[0.00617], precision=[0.00270], ndcg=[0.00534]
+embed_size=64, lr=0.0010, layer_size=[64,64,64], node_dropout=[0.1], mess_dropout=[0.1], regs=[1e-4], adj_type=pre
+	Best Iter=[0]@[460.5]	recall=[0.00603], precision=[0.00290], ndcg=[0.00514]
+embed_size=64, lr=0.0010, layer_size=[64,64,64], node_dropout=[0.1], mess_dropout=[0.1], regs=[1e-4], adj_type=pre
+	Best Iter=[9]@[539.8]	recall=[0.01313], precision=[0.00675], ndcg=[0.01824]
+embed_size=64, lr=0.0010, layer_size=[64,64,64], node_dropout=[0.1], mess_dropout=[0.1], regs=[1e-4], adj_type=pre
+	Best Iter=[3]@[517.3]	recall=[0.01802], precision=[0.00825], ndcg=[0.01820]
