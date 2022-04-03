@@ -1,10 +1,6 @@
-'''
-Created on Oct 10, 2018
-Tensorflow Implementation of Neural Graph Collaborative Filtering (NGCF) model in:
-Wang Xiang et al. Neural Graph Collaborative Filtering. In SIGIR 2019.
-
-@author: Xiang Wang (xiangwang@u.nus.edu)
-'''
+"""
+owner Madan Singhal
+"""
 from utility.parser import parse_args
 from utility.load_data import *
 from evaluator import eval_score_matrix_foldout
@@ -34,7 +30,7 @@ def test(sess, model, users_to_test, drop_flag=False, train_set_flag=0):
     test_users = users_to_test
     n_test_users = len(test_users)
     n_user_batchs = n_test_users // u_batch_size + 1
-    
+
     count = 0
     all_result = []
     item_batch = range(ITEM_NUM)
@@ -56,21 +52,21 @@ def test(sess, model, users_to_test, drop_flag=False, train_set_flag=0):
         if train_set_flag == 0:
             for user in user_batch:
                 test_items.append(data_generator.test_set[user])# (B, #test_items)
-                
+
             # set the ranking scores of training items to -inf,
-            # then the training items will be sorted at the end of the ranking list.    
+            # then the training items will be sorted at the end of the ranking list.
             for idx, user in enumerate(user_batch):
                     train_items_off = data_generator.train_items[user]
                     rate_batch[idx][train_items_off] = -np.inf
         else:
             for user in user_batch:
                 test_items.append(data_generator.train_items[user])
-        
+
         batch_result = eval_score_matrix_foldout(rate_batch, test_items, max_top)#(B,k*metric_num), max_top= 20
         count += len(batch_result)
         all_result.append(batch_result)
-        
-    
+
+
     assert count == n_test_users
     all_result = np.concatenate(all_result, axis=0)
     final_result = np.mean(all_result, axis=0)  # mean
@@ -81,13 +77,3 @@ def test(sess, model, users_to_test, drop_flag=False, train_set_flag=0):
     result['recall'] += final_result[1]
     result['ndcg'] += final_result[3]
     return result
-               
-            
-
-
-
-
-
-
-
-
