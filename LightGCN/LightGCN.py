@@ -114,7 +114,7 @@ class LightGCN(object):
         Create Model Parameters (i.e., Initialize Weights).
         """
         # initialization of model parameters
-        self.weights = self._init_weights(use_categories=True) if self.alg_type == 'graphranko' else self._init_weights(use_categories=False)
+        self.weights = self._init_weights(use_categories=True) if self.alg_type in ['graphranko', 'light_graphranko'] else self._init_weights(use_categories=False)
 
         """
         *********************************************************
@@ -136,8 +136,11 @@ class LightGCN(object):
         elif self.alg_type in ['gcmc']:
             self.ua_embeddings, self.ia_embeddings = self._create_gcmc_embed()
 
-        elif self.alg_type in ['graphranko']:
+        elif self.alg_type in ['light_graphranko']:
             self.ua_embeddings, self.ia_embeddings = self._create_graphranko_embed()
+
+        elif self.alg_type in ['graphranko']:
+            self.ua_embeddings, self.ia_embeddings = self._create_graphranko_ngcf_embed()
 
         """
         *********************************************************
@@ -251,6 +254,7 @@ class LightGCN(object):
         return A_fold_hat
 
     def _create_graphranko_embed(self):
+
         if self.node_dropout_flag:
             A_fold_hat = self._split_A_hat_node_dropout(self.norm_adj, use_categories=True)
         else:
@@ -272,6 +276,48 @@ class LightGCN(object):
         all_embeddings = tf.reduce_mean(all_embeddings, axis=1, keepdims=False)
         u_g_embeddings, i_g_embeddings, c_g_embeddings = tf.split(all_embeddings, [self.n_users, self.n_items, self.n_categories], 0)
         return u_g_embeddings, i_g_embeddings
+
+
+    def _create_graphranko_ngcf_embed(self):
+
+        if self.node_dropout_flag:
+            A_fold_hat = self._split_A_hat_node_dropout(self.norm_adj, use_categories=True)
+        else:
+            A_fold_hat = self._split_A_hat(self.norm_adj, use_categories=True)
+
+        ego_embeddings = tf.concat([self.weights['user_embedding'], self.weights['item_embedding'], self.weights['category_embedding']], axis=0)
+
+        all_embeddings = [ego_embeddings]
+
+        for k in range(0, self.n_layers):
+
+            temp_embed = []
+            for f in range(self.n_fold):
+                temp_embed.append(tf.sparse_tensor_dense_matmul(A_fold_hat[f], ego_embeddings))
+
+            side_embeddings = tf.concat(temp_embed, 0)
+            sum_embeddings = tf.nn.leaky_relu(tf.matmul(side_embeddings, self.weights['W_gc_%d' % k]) + self.weights['b_gc_%d' % k])
+
+            # bi messages of neighbors.
+            bi_embeddings = tf.multiply(ego_embeddings, side_embeddings)
+            # transformed bi messages of neighbors.
+            bi_embeddings = tf.nn.leaky_relu(tf.matmul(bi_embeddings, self.weights['W_bi_%d' % k]) + self.weights['b_bi_%d' % k])
+            # non-linear activation.
+            ego_embeddings = sum_embeddings + bi_embeddings
+
+            # message dropout.
+            # ego_embeddings = tf.nn.dropout(ego_embeddings, 1 - self.mess_dropout[k])
+
+            # normalize the distribution of embeddings.
+            norm_embeddings = tf.nn.l2_normalize(ego_embeddings, axis=1)
+
+            all_embeddings += [norm_embeddings]
+
+        all_embeddings = tf.concat(all_embeddings, 1)
+        u_g_embeddings, i_g_embeddings, c_g_embeddings = tf.split(all_embeddings, [self.n_users, self.n_items, self.n_categories], 0)
+        return u_g_embeddings, i_g_embeddings
+
+
 
     def _create_lightgcn_embed(self):
         if self.node_dropout_flag:
