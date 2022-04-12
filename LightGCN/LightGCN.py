@@ -1,8 +1,8 @@
 '''
-Created on Oct 10, 2018
+Created on Oct 02, 2021
 Tensorflow Implementation of Neural Graph Collaborative Filtering (NGCF) model in:
 Wang Xiang et al. Neural Graph Collaborative Filtering. In SIGIR 2019.
-@author: Xiang Wang (xiangwang@u.nus.edu)
+@author: msinghal
 version:
 Parallelized sampling on CPU
 C++ evaluation for top-k recommendation
