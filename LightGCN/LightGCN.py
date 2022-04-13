@@ -25,7 +25,7 @@ cpus = [x.name for x in device_lib.list_local_devices() if x.device_type == 'CPU
 class LightGCN(object):
     def __init__(self, data_config, pretrain_data):
         # argument settings
-        self.model_type = 'LightGCN'
+        self.model_type = 'GraphicoRank'
         self.adj_type = args.adj_type
         self.alg_type = args.alg_type
         self.pretrain_data = pretrain_data
@@ -564,7 +564,7 @@ if __name__ == '__main__':
     *********************************************************
     Generate the Laplacian matrix, where each entry defines the decay factor (e.g., p_ui) between two connected nodes.
     """
-    plain_adj, norm_adj, mean_adj, pre_adj = data_generator.get_adj_mat(use_categories = args.alg_type=='graphranko')
+    plain_adj, norm_adj, mean_adj, pre_adj = data_generator.get_adj_mat(use_categories = args.alg_type in ['graphranko', 'light_graphranko'])
     if args.adj_type == 'plain':
         config['norm_adj'] = plain_adj
         print('use the plain adjacency matrix')
