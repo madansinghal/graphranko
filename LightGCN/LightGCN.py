@@ -125,6 +125,7 @@ class LightGCN(object):
             3. gcmc: defined in 'Graph Convolutional Matrix Completion', KDD2018;
         """
         if self.alg_type in ['lightgcn']:
+
             self.ua_embeddings, self.ia_embeddings = self._create_lightgcn_embed()
 
         elif self.alg_type in ['ngcf']:
@@ -254,7 +255,7 @@ class LightGCN(object):
         return A_fold_hat
 
     def _create_graphranko_embed(self):
-
+        print("running meta enabled lightgcn model")
         if self.node_dropout_flag:
             A_fold_hat = self._split_A_hat_node_dropout(self.norm_adj, use_categories=True)
         else:
@@ -279,6 +280,7 @@ class LightGCN(object):
 
 
     def _create_graphranko_ngcf_embed(self):
+        print("running meta enabled ngcf model")
 
         if self.node_dropout_flag:
             A_fold_hat = self._split_A_hat_node_dropout(self.norm_adj, use_categories=True)
@@ -320,6 +322,7 @@ class LightGCN(object):
 
 
     def _create_lightgcn_embed(self):
+        print("running lighgcn model")
         if self.node_dropout_flag:
             A_fold_hat = self._split_A_hat_node_dropout(self.norm_adj)
         else:
@@ -343,6 +346,7 @@ class LightGCN(object):
         return u_g_embeddings, i_g_embeddings
 
     def _create_ngcf_embed(self):
+        print("running ngcf model")
         if self.node_dropout_flag:
             A_fold_hat = self._split_A_hat_node_dropout(self.norm_adj)
         else:
@@ -381,6 +385,7 @@ class LightGCN(object):
         return u_g_embeddings, i_g_embeddings
 
     def _create_gcn_embed(self):
+        print("running gcn model")
         A_fold_hat = self._split_A_hat(self.norm_adj)
         embeddings = tf.concat([self.weights['user_embedding'], self.weights['item_embedding']], axis=0)
 
@@ -402,6 +407,7 @@ class LightGCN(object):
         return u_g_embeddings, i_g_embeddings
 
     def _create_gcmc_embed(self):
+        print("running gcmc model")
         A_fold_hat = self._split_A_hat(self.norm_adj)
 
         embeddings = tf.concat([self.weights['user_embedding'], self.weights['item_embedding']], axis=0)
@@ -426,6 +432,7 @@ class LightGCN(object):
         return u_g_embeddings, i_g_embeddings
 
     def create_bpr_loss(self, users, pos_items, neg_items):
+        print("creating bpr loss")
         pos_scores = tf.reduce_sum(tf.multiply(users, pos_items), axis=1)
         neg_scores = tf.reduce_sum(tf.multiply(users, neg_items), axis=1)
 
@@ -442,6 +449,7 @@ class LightGCN(object):
         return mf_loss, emb_loss, reg_loss
 
     def create_rated_bpr_loss(self, users, pos_items, neg_items, pos_ratings, neg_ratings):
+        print("creating rating normalized bpr loss")
         pos_scores = tf.reduce_sum(tf.multiply(users, pos_items), axis=1)
         neg_scores = tf.reduce_sum(tf.multiply(users, neg_items), axis=1)
 
